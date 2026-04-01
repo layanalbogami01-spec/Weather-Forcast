@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast - Saudi Arabia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #ff7e5f 0%, #2b5876 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .cities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .weather-card { background: #ffffff; border-radius: 15px; padding: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); transition: transform 0.3s ease; }
+        .weather-card:hover { transform: translateY(-10px); }
+        .city-name { font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .temperature { font-size: 2.5rem; color: #ff6b6b; font-weight: bold; margin-bottom: 10px; }
+        .weather-desc { color: #666; margin-bottom: 10px; font-size: 1rem; }
+        .weather-message { font-size: 0.9rem; color: #444; margin-bottom: 15px; }
+        .details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; color: #555; }
+        .detail-item { background: #f5f5f5; padding: 10px; border-radius: 8px; }
+        .label { font-weight: bold; color: #333; }
+        .weather-icon { font-size: 3rem; margin-bottom: 10px; }
+        input, button { outline: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Weather Forecast</h1>
+
+            <p style="font-size:0.9rem; opacity:0.9; margin-top:10px;">Last updated: <span id="lastUpdate"></span></p>
+            <button id="unitToggle" style="background: rgba(255,255,255,0.3); color:white; border:2px solid white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.9rem; margin-top:15px; margin-right:10px;">Switch to °F</button>
+            <div style="margin-top:20px;">
+                <input id="cityInput" type="text" placeholder="Search weather in your city..." style="padding:10px 15px; border-radius:8px; border:none; width:250px; font-size:0.9rem;">
+                <button id="addCityBtn" style="padding:10px 20px; margin-left:10px; background: rgba(255,255,255,0.3); color:white; border:2px solid white; border-radius:8px; cursor:pointer; font-size:0.9rem;">Search</button>
+            </div>
+            <div style="margin-top:12px;">
+                <input id="latInput" type="text" placeholder="Latitude" style="padding:10px 15px; border-radius:8px; border:none; width:120px; font-size:0.9rem; margin-right:8px;">
+                <input id="lonInput" type="text" placeholder="Longitude" style="padding:10px 15px; border-radius:8px; border:none; width:120px; font-size:0.9rem; margin-right:8px;">
+                <button id="addCoordsBtn" style="padding:10px 20px; background: rgba(255,255,255,0.3); color:white; border:2px solid white; border-radius:8px; cursor:pointer; font-size:0.9rem;">Search by coordinates</button>
+            </div>
+        </header>
+
+        <div class="cities-grid">
+            <div class="weather-card" data-condition="sunny">
+                <div class="weather-icon"></div>
+                <div class="city-name">Riyadh</div>
+                <div class="temperature">38°C</div>
+                <div class="weather-desc">Sunny and Hot</div>
+                <div class="weather-message">Too hot to go outside! 🔥</div>
+                <div class="details">
+                    <div class="detail-item"><span class="label">Humidity:</span> 15%</div>
+                    <div class="detail-item"><span class="label">Wind:</span> 12 km/h</div>
+                    <div class="detail-item"><span class="label">Pressure:</span> 1010 mb</div>
+                    <div class="detail-item"><span class="label">UV Index:</span> 11</div>
+                </div>
+            </div>
+            <div class="weather-card" data-condition="cloudy">
+                <div class="weather-icon"></div>
+                <div class="city-name">Jeddah</div>
+                <div class="temperature">34°C</div>
+                <div class="weather-desc">Partly Cloudy</div>
+                <div class="weather-message">A bit cloudy today, maybe carry a light jacket ☁️</div>
+                <div class="details">
+                    <div class="detail-item"><span class="label">Humidity:</span> 65%</div>
+                    <div class="detail-item"><span class="label">Wind:</span> 18 km/h</div>
+                    <div class="detail-item"><span class="label">Pressure:</span> 1012 mb</div>
+                    <div class="detail-item"><span class="label">UV Index:</span> 9</div>
+                </div>
+            </div>
+            <div class="weather-card" data-condition="clear">
+                <div class="weather-icon"></div>
+                <div class="city-name">Dammam</div>
+                <div class="temperature">36°C</div>
+                <div class="weather-desc">Clear Sky</div>
+                <div class="weather-message">Clear night, perfect for stargazing 🌙</div>
+                <div class="details">
+                    <div class="detail-item"><span class="label">Humidity:</span> 45%</div>
+                    <div class="detail-item"><span class="label">Wind:</span> 14 km/h</div>
+                    <div class="detail-item"><span class="label">Pressure:</span> 1011 mb</div>
+                    <div class="detail-item"><span class="label">UV Index:</span> 10</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleString('en-US', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+        }
+        updateTimestamp();
+
+        const weatherIcons = { sunny:'☀️', cloudy:'⛅', rainy:'🌧️', clear:'🌙', windy:'💨', snow:'❄️' };
+        document.querySelectorAll('.weather-card').forEach(card => {
+            const condition = card.dataset.condition;
+            card.querySelector('.weather-icon').textContent = weatherIcons[condition] || '🌤️';
+        });
+
+        const API_KEY = '81174574c8bddf4b142a7d2965ab13f6';
+        const API_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+
+        function getWeatherCondition(weatherCode) {
+            if(weatherCode>=200 && weatherCode<300) return 'rainy';
+            if(weatherCode>=300 && weatherCode<600) return 'rainy';
+            if(weatherCode>=600 && weatherCode<700) return 'snow';
+            if(weatherCode===800) return 'sunny';
+            if([801,802,803,804].includes(weatherCode)) return 'cloudy';
+            return 'sunny';
+        }
+
+        function getWeatherMessage(condition, temp) {
+            switch(condition){
+                case 'sunny': return temp>=35 ? "Too hot to go outside! 🔥" : "Good sun for a good tan ☀️";
+                case 'rainy': return "You better take your umbrella today 🌧️";
+                case 'cloudy': return "A bit cloudy today, maybe carry a light jacket ☁️";
+                case 'snow': return "Snowy day! Stay warm ❄️";
+                case 'clear': return "Clear night, perfect for stargazing 🌙";
+                case 'windy': return "Windy day, hold onto your hat 💨";
+                default: return "";
+            }
+        }
+
+        let isCelsius = true;
+
+        async function fetchWeatherData(cityName) {
+            try {
+                document.getElementById('addCityBtn').disabled=true;
+                document.getElementById('addCityBtn').textContent='Searching...';
+                const response = await fetch(`${API_BASE_URL}?q=${cityName}&appid=${API_KEY}&units=metric`);
+                if(!response.ok) throw new Error('City not found');
+                const data = await response.json();
+                const weatherData = {
+                    temp: Math.round(data.main.temp),
+                    humidity: data.main.humidity,
+                    wind: Math.round(data.wind.speed),
+                    pressure: data.main.pressure,
+                    desc: data.weather[0].main,
+                    condition: getWeatherCondition(data.weather[0].id),
+                    cityName: data.name
+                };
+                const grid = document.querySelector('.cities-grid');
+                const newCard = document.createElement('div');
+                newCard.className='weather-card';
+                newCard.dataset.condition = weatherData.condition;
+                const tempDisplay = isCelsius ? weatherData.temp+'°C' : Math.round((weatherData.temp*9/5)+32)+'°F';
+                newCard.innerHTML = `
+                    <div class="weather-icon"></div>
+                    <div class="city-name">${weatherData.cityName}</div>
+                    <div class="temperature">${tempDisplay}</div>
+                    <div class="weather-desc">${weatherData.desc}</div>
+                    <div class="weather-message">${getWeatherMessage(weatherData.condition, weatherData.temp)}</div>
+                    <div class="details">
+                        <div class="detail-item"><span class="label">Humidity:</span> ${weatherData.humidity}%</div>
+                        <div class="detail-item"><span class="label">Wind:</span> ${weatherData.wind} m/s</div>
+                        <div class="detail-item"><span class="label">Pressure:</span> ${weatherData.pressure} mb</div>
+                    </div>
+                `;
+                grid.appendChild(newCard);
+                newCard.querySelector('.weather-icon').textContent = weatherIcons[weatherData.condition] || '🌤️';
+                document.getElementById('cityInput').value='';
+            } catch(e){ alert('Error: '+e.message); }
+            finally{
+                document.getElementById('addCityBtn').disabled=false;
+                document.getElementById('addCityBtn').textContent='Search';
+            }
+        }
+
+        async function fetchWeatherDataByCoords(lat, lon){
+            try{
+                document.getElementById('addCoordsBtn').disabled=true;
+                document.getElementById('addCoordsBtn').textContent='Searching...';
+                const response = await fetch(`${API_BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
+                if(!response.ok) throw new Error('Coordinates not found');
+                const data = await response.json();
+                const weatherData = {
+                    temp: Math.round(data.main.temp),
+                    humidity: data.main.humidity,
+                    wind: Math.round(data.wind.speed),
+                    pressure: data.main.pressure,
+                    desc: data.weather[0].main,
+                    condition: getWeatherCondition(data.weather[0].id),
+                    cityName: `${data.name} (${lat},${lon})`
+                };
+                const grid = document.querySelector('.cities-grid');
+                const newCard = document.createElement('div');
+                newCard.className='weather-card';
+                newCard.dataset.condition=weatherData.condition;
+                const tempDisplay = isCelsius ? weatherData.temp+'°C' : Math.round((weatherData.temp*9/5)+32)+'°F';
+                newCard.innerHTML = `
+                    <div class="weather-icon"></div>
+                    <div class="city-name">${weatherData.cityName}</div>
+                    <div class="temperature">${tempDisplay}</div>
+                    <div class="weather-desc">${weatherData.desc}</div>
+                    <div class="weather-message">${getWeatherMessage(weatherData.condition, weatherData.temp)}</div>
+                    <div class="details">
+                        <div class="detail-item"><span class="label">Humidity:</span> ${weatherData.humidity}%</div>
+                        <div class="detail-item"><span class="label">Wind:</span> ${weatherData.wind} m/s</div>
+                        <div class="detail-item"><span class="label">Pressure:</span> ${weatherData.pressure} mb</div>
+                    </div>
+                `;
+                grid.appendChild(newCard);
+                newCard.querySelector('.weather-icon').textContent = weatherIcons[weatherData.condition] || '🌤️';
+                document.getElementById('latInput').value='';
+                document.getElementById('lonInput').value='';
+            }catch(e){ alert('Error: '+e.message); }
+            finally{
+                document.getElementById('addCoordsBtn').disabled=false;
+                document.getElementById('addCoordsBtn').textContent='Search by coordinates';
+            }
+        }
+
+        document.getElementById('addCityBtn').addEventListener('click',()=> {
+            const cityName=document.getElementById('cityInput').value.trim();
+            if(cityName) fetchWeatherData(cityName);
+            else alert('Please enter a city name');
+        });
+
+        document.getElementById('addCoordsBtn').addEventListener('click',()=>{
+            const lat=document.getElementById('latInput').value.trim();
+            const lon=document.getElementById('lonInput').value.trim();
+            if(!lat || !lon) { alert('Please enter both latitude and longitude'); return; }
+            fetchWeatherDataByCoords(lat,lon);
+        });
+
+        ['cityInput','latInput','lonInput'].forEach(id=>{
+            document.getElementById(id).addEventListener('keypress',e=>{
+                if(e.key==='Enter'){
+                    if(id==='cityInput') document.getElementById('addCityBtn').click();
+                    else document.getElementById('addCoordsBtn').click();
+                }
+            });
+        });
+
+        const btn = document.getElementById('unitToggle');
+        btn.addEventListener('click',()=>{
+            isCelsius = !isCelsius;
+            btn.textContent = isCelsius ? 'Switch to °F' : 'Switch to °C';
+            document.querySelectorAll('.temperature').forEach(temp=>{
+                let value=parseInt(temp.textContent);
+                if(isCelsius) temp.textContent=value+'°C';
+                else temp.textContent=Math.round((value*9/5)+32)+'°F';
+            });
+        });
+    </script>
+</body>
+</html>
